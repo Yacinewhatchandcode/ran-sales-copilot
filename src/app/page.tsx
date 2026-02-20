@@ -97,13 +97,17 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <div className={styles.logo}>RAN // AI Sales Co-Pilot</div>
+        <div className={styles.brandRow}>
+          <div className={styles.logo}>RAN // AI Sales Co-Pilot</div>
+          <div className={styles.betaBadge}>Private Beta – Limited Access</div>
+        </div>
         <h1 className={styles.title}>
-          <span>Enterprise Grade</span>{" "}
-          <span className="gold-gradient-text">Call Intelligence</span>
+          <span>Conversation Intelligence for</span>{" "}
+          <span className="gold-gradient-text">High-Performance</span>{" "}
+          <span>Sales Teams</span>
         </h1>
         <p className={styles.subtitle}>
-          Upload your sales transcript. Get instant, structured analysis of pain points, objections, and deal probability. Uncover what hides between the lines.
+          Upload a real call. Get actionable performance insights in minutes.
         </p>
       </header>
 
@@ -298,6 +302,24 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "3rem", borderTop: "1px solid var(--border-color)", paddingTop: "3rem" }}>
+                <button className={styles.btnPrimary} style={{ fontSize: "1.1rem", padding: "1rem 3rem", width: "auto", minWidth: "300px" }}>
+                  Book Optimization Call
+                </button>
+                <p style={{ color: "var(--accent-gold)", fontWeight: 600, fontSize: "0.9rem", marginTop: "1rem", letterSpacing: "0.05em" }}>
+                  ✦ FOUNDING MEMBERS PRICING – LOCKED FOR LIFE
+                </p>
+
+                <div className={styles.testimonialOverlay}>
+                  <p className={styles.testimonialQuote}>
+                    "Since piping our calls through RAN, our SDR sequence reply rate went up 42%. It literally feeds our reps the precise closing script before they even dial."
+                  </p>
+                  <p className={styles.testimonialAuthor}>
+                    — VP Sales, Mid-Market B2B SaaS
+                  </p>
                 </div>
               </div>
 
