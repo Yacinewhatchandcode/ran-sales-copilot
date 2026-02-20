@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { orchestrateAnalysis } from "@/lib/agents/orchestrator";
 import { supabaseAdmin } from "@/lib/supabase/client";
+import { runCRMNode } from "@/lib/agents/crmNode";
+import { runEmailNode } from "@/lib/agents/emailNode";
+import { runVectorMemoryNode } from "@/lib/agents/memoryNode";
 
 export async function POST(request: Request) {
     try {
@@ -64,6 +67,14 @@ export async function POST(request: Request) {
                         emotional_shifts: result.emotionalShifts,
                         financial_tiers: result.financialTiers
                     });
+                // --- Q2 AUTO-EXECUTION LAYER (Fire and Forget) ---
+                console.log("[Orchestrator] Triggering Q2 Auto-Execution Nodes...");
+                Promise.all([
+                    runCRMNode(email, result.painPoints, result.objections, result.dealProbability),
+                    runEmailNode(result.sdrTargetPersona, result.sdrSequence, "prospect@example.com"), // Uses a dummy prospect mail for demo
+                    runVectorMemoryNode(transcriptRecord.id, transcript, result.objections)
+                ]).catch(err => console.error("Auto-Execution Background Error:", err));
+
             } else {
                 console.error("[Orchestrator] Supabase Transcript Save Error:", tErr);
             }
