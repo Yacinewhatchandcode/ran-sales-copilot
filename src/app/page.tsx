@@ -77,7 +77,7 @@ export default function Home() {
       const response = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript }),
+        body: JSON.stringify({ transcript, email }),
       });
 
       if (!response.ok) {

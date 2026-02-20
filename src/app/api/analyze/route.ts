@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { orchestrateAnalysis } from "@/lib/agents/orchestrator";
+import { supabaseAdmin } from "@/lib/supabase/client";
 
 export async function POST(request: Request) {
     try {
-        const { transcript } = await request.json();
+        const { transcript, email } = await request.json();
 
         if (!transcript) {
             return NextResponse.json({ error: "Transcript is required" }, { status: 400 });
@@ -35,6 +36,39 @@ export async function POST(request: Request) {
         }
 
         const result = await orchestrateAnalysis(transcript);
+
+        // --- SUPABASE WIRING: Persistent Memory Saving ---
+        if (email && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+            console.log("[Orchestrator] Saving execution block to Supabase DB...");
+
+            // 1. Save Raw Transcript
+            const { data: transcriptRecord, error: tErr } = await supabaseAdmin
+                .from("transcripts")
+                .insert({ user_email: email, raw_text: transcript })
+                .select()
+                .single();
+
+            if (transcriptRecord && !tErr) {
+                // 2. Save Analysis Nodes
+                await supabaseAdmin
+                    .from("analyses")
+                    .insert({
+                        transcript_id: transcriptRecord.id,
+                        deal_probability: result.dealProbability,
+                        closing_strategy: result.closingStrategy,
+                        sdr_target_persona: result.sdrTargetPersona,
+                        sdr_sequence: result.sdrSequence,
+                        pain_points: result.painPoints,
+                        objections: result.objections,
+                        authority_positioning: result.authorityPositioning,
+                        emotional_shifts: result.emotionalShifts,
+                        financial_tiers: result.financialTiers
+                    });
+            } else {
+                console.error("[Orchestrator] Supabase Transcript Save Error:", tErr);
+            }
+        }
+
         return NextResponse.json(result);
 
     } catch (error) {
