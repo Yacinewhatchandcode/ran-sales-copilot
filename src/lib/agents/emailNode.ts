@@ -18,12 +18,11 @@ export async function runEmailNode(sdrTargetPersona: string, sequence: string[],
 
     try {
         const credentials = JSON.parse(Buffer.from(credentialsEncoded, "base64").toString("utf8"));
-        const client = new google.auth.JWT(
-            credentials.client_email,
-            undefined,
-            credentials.private_key,
-            ["https://www.googleapis.com/auth/gmail.compose"]
-        );
+        const client = new google.auth.JWT({
+            email: credentials.client_email,
+            key: credentials.private_key,
+            scopes: ["https://www.googleapis.com/auth/gmail.compose"]
+        });
 
         await client.authorize();
         const gmail = google.gmail({ version: "v1", auth: client });

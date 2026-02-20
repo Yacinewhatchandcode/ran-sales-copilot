@@ -12,7 +12,9 @@ import {
   Loader2,
   Lock,
   Briefcase,
-  Mail
+  Mail,
+  Mic,
+  Square
 } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -36,6 +38,10 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  // Q3 WebRTC Voice Layer
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +70,57 @@ export default function Home() {
       setTranscript(text);
     } else if (file) {
       alert("Please drop a valid .txt file.");
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      let chunks: BlobPart[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        chunks = [];
+        await processAudio(audioBlob);
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Microphone access denied", err);
+      alert("Please allow microphone access to use the Live Voice Layer.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(t => t.stop());
+      setIsRecording(false);
+    }
+  };
+
+  const processAudio = async (blob: Blob) => {
+    setIsAnalyzing(true);
+    const formData = new FormData();
+    formData.append("file", blob, "audio.webm");
+
+    try {
+      const resp = await fetch("/api/whisper", { method: "POST", body: formData });
+      if (!resp.ok) throw new Error("Whisper failed");
+      const data = await resp.json();
+      setTranscript(prev => prev + (prev ? " " : "") + data.text);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to transcribe live audio.");
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -157,7 +214,7 @@ export default function Home() {
               disabled={isAnalyzing}
             />
 
-            <div className={styles.actionRow}>
+            <div className={styles.actionRow} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <button
                 className={styles.btnPrimary}
                 onClick={handleAnalyze}
@@ -173,6 +230,25 @@ export default function Home() {
                   <>
                     Analyze Call <Target size={18} />
                   </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={isAnalyzing}
+                style={{
+                  width: "auto",
+                  background: isRecording ? "rgba(255, 71, 87, 0.1)" : "rgba(255, 255, 255, 0.05)",
+                  color: isRecording ? "#ff4757" : "var(--text)",
+                  border: isRecording ? "1px solid rgba(255, 71, 87, 0.3)" : "1px solid rgba(255, 255, 255, 0.1)"
+                }}
+              >
+                {isRecording ? (
+                  <>Stop Listening <Square size={18} fill="currentColor" /></>
+                ) : (
+                  <>Live Listen Phase <Mic size={18} /></>
                 )}
               </button>
             </div>
