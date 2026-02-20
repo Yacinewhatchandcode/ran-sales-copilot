@@ -109,6 +109,13 @@ export default function Home() {
         <p className={styles.subtitle}>
           Upload a real call. Get actionable performance insights in minutes.
         </p>
+        <div className={styles.integrationsRow}>
+          <span className={styles.integrationGhost}>Seamless processing for:</span>
+          <span className={styles.integrationItem}>Zoom</span>
+          <span className={styles.integrationItem}>Teams</span>
+          <span className={styles.integrationItem}>Google Meet</span>
+          <span className={styles.integrationItem}>HubSpot CRM</span>
+        </div>
       </header>
 
       {!isLoggedIn ? (

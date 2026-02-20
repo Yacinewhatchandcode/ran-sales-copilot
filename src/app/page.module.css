@@ -59,8 +59,41 @@
   font-size: 1.25rem;
   color: var(--text-muted);
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
   line-height: 1.6;
+}
+
+.integrationsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.integrationGhost {
+  font-size: 0.85rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.integrationItem {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s;
+}
+
+.integrationItem:hover {
+  color: var(--accent-gold);
+  border-color: rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.05);
 }
 
 .main {
