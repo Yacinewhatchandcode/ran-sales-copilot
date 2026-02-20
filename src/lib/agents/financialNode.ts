@@ -10,7 +10,18 @@ export const financialSchema = z.object({
 });
 
 export async function runFinancialNode(transcript: string) {
-    const llm = new ChatOpenAI({ model: "gpt-4o", temperature: 0.1 });
+    const llm = new ChatOpenAI({
+        model: "openrouter/free",
+        temperature: 0.1,
+        openAIApiKey: process.env.OPENROUTER_API_KEY,
+        configuration: {
+            baseURL: "https://openrouter.ai/api/v1",
+            defaultHeaders: {
+                "HTTP-Referer": "https://yace19ai.com",
+                "X-Title": "RAN Sales Co-Pilot"
+            }
+        }
+    });
 
     const prompt = `You are a world-class VP of Finance and SaaS Structurer.
 Given the following sales transcript context, assess any budget constraints, deal size, or prospect maturity.

@@ -11,7 +11,18 @@ export async function runSDRNode(painPoints: any[], transcript: string) {
         return { targetPersona: "General", sequence: ["No strong pain points detected to draft sequence."] };
     }
 
-    const llm = new ChatOpenAI({ model: "gpt-4o", temperature: 0.3 });
+    const llm = new ChatOpenAI({
+        model: "openrouter/free",
+        temperature: 0.3,
+        openAIApiKey: process.env.OPENROUTER_API_KEY,
+        configuration: {
+            baseURL: "https://openrouter.ai/api/v1",
+            defaultHeaders: {
+                "HTTP-Referer": "https://yace19ai.com",
+                "X-Title": "RAN Sales Co-Pilot"
+            }
+        }
+    });
 
     const prompt = `You are a world-class Sales Development Representative (SDR) and Copywriter.
 Given the following transcript and specific pain points extracted, identify the core Target Persona and draft a highly-targeted 3-step cold email sequence targeting similar companies.

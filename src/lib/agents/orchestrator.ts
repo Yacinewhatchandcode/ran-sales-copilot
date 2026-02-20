@@ -23,7 +23,18 @@ const baseAnalyzeSchema = z.object({
 
 export async function orchestrateAnalysis(transcript: string) {
     // Step 1: Base Context Extraction
-    const llm = new ChatOpenAI({ model: "gpt-4o", temperature: 0.2 });
+    const llm = new ChatOpenAI({
+        model: "openrouter/free",
+        temperature: 0.2,
+        openAIApiKey: process.env.OPENROUTER_API_KEY,
+        configuration: {
+            baseURL: "https://openrouter.ai/api/v1",
+            defaultHeaders: {
+                "HTTP-Referer": "https://yace19ai.com", // Optional, for OpenRouter rankings
+                "X-Title": "RAN Sales Co-Pilot" // Optional, for OpenRouter rankings
+            }
+        }
+    });
     const basePrompt = `Extract core intelligence from this sales transcript.
   
 Transcript:

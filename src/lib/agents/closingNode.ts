@@ -11,7 +11,18 @@ export async function runClosingNode(objections: string[], emotionalShifts: any[
         return { dealProbability: 80, closingStrategy: "No major friction detected. Proceed to standard close." };
     }
 
-    const llm = new ChatOpenAI({ model: "gpt-4o", temperature: 0.1 });
+    const llm = new ChatOpenAI({
+        model: "openrouter/free",
+        temperature: 0.1,
+        openAIApiKey: process.env.OPENROUTER_API_KEY,
+        configuration: {
+            baseURL: "https://openrouter.ai/api/v1",
+            defaultHeaders: {
+                "HTTP-Referer": "https://yace19ai.com",
+                "X-Title": "RAN Sales Co-Pilot"
+            }
+        }
+    });
 
     const prompt = `You are a world-class Closing Optimizer and Sales Strategist using MEDDIC and Challenger Sale frameworks.
 Given the following key friction points (objections and emotional shifts) and partial context, generate the ultimate deal probability (0-100) and an exact 3-sentence reversal script to bypass the main objection.

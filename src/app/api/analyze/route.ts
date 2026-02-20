@@ -10,8 +10,8 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Transcript is required" }, { status: 400 });
         }
 
-        if (!process.env.OPENAI_API_KEY) {
-            console.warn("No OPENAI_API_KEY set, returning mock data.");
+        if (!process.env.OPENROUTER_API_KEY) {
+            console.warn("No OPENROUTER_API_KEY set, returning mock data.");
             return NextResponse.json({
                 painPoints: [
                     { point: "Budget constraints in Q3", severity: "high" },
