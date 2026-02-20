@@ -14,8 +14,10 @@ import {
   Briefcase,
   Mail,
   Mic,
-  Square
+  Square,
+  Settings
 } from "lucide-react";
+import Link from "next/link";
 import styles from "./page.module.css";
 
 type AnalysisResult = {
@@ -251,6 +253,10 @@ export default function Home() {
                   <>Live Listen Phase <Mic size={18} /></>
                 )}
               </button>
+
+              <Link href="/integrations" className={styles.btnPrimary} style={{ background: "transparent", border: "1px solid var(--border-color)", color: "var(--text-muted)", width: "auto", marginLeft: "auto" }}>
+                <Settings size={18} /> Connect APIs
+              </Link>
             </div>
           </div>
 
